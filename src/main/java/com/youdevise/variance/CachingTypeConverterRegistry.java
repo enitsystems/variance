@@ -1,29 +1,13 @@
 package com.youdevise.variance;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
-
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
 
 public class CachingTypeConverterRegistry implements TypeConverterRegistry {
     
-    private static final class ConverterNotFoundException extends Exception {
-        private static final long serialVersionUID = 560390370659936157L;
-    }
-    
-    private final Cache<ConversionKey, Function<?, ?>> cache = CacheBuilder.newBuilder()
-            .build(new CacheLoader<ConversionKey, Function<?, ?>>() {
-                @Override public Function<?, ?> load(ConversionKey key) throws ConverterNotFoundException {
-                    if (innerRegistry.hasConverter(key.sourceClass, key.targetClass)) {
-                        return innerRegistry.getConverter(key.sourceClass, key.targetClass);
-                    }
-                    throw new ConverterNotFoundException();
-                }
-            });
-
+    private final Map<ConversionKey, Function<?, ?>> cache = new HashMap<>();
     
     private static final class ConversionKey {
         private final Class<?> sourceClass;
@@ -68,11 +52,14 @@ public class CachingTypeConverterRegistry implements TypeConverterRegistry {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private <S, T> Function<? super S, ? extends T> findConverter(Class<S> sourceClass, Class<T> targetClass) {
         ConversionKey key = new ConversionKey(sourceClass, targetClass);
-        try {
-            return (Function) cache.get(key);
-        } catch (ExecutionException e) {
-            return null;
-        }
+    	return (Function) cache.computeIfAbsent(key, new Function() {
+			@Override
+			public Object apply(Object t) {
+				if (innerRegistry.hasConverter(key.sourceClass, key.targetClass)) {
+					return innerRegistry.getConverter(key.sourceClass, key.targetClass);
+				}
+				return null;
+			}
+    	});
     }
-
 }
