@@ -1,19 +1,18 @@
 package com.youdevise.variance;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Maps;
 
-import static com.google.common.collect.Maps.newHashMap;
 
 public class TypeConverterDictionary {
     private final Map<Class<?>, Map<Class<?>, Function<?, ?>>> registry;
     
     public TypeConverterDictionary() {
-        registry = Maps.newHashMap();
+        registry = new HashMap<>();
     }
     
     public TypeConverterDictionary(Map<Class<?>, Map<Class<?>, Function<?, ?>>> registry) {
@@ -28,7 +27,7 @@ public class TypeConverterDictionary {
         if (registry.containsKey(sourceClass)) {
             return registry.get(sourceClass);
         }
-        Map<Class<?>, Function<?, ?>> converters = newHashMap();
+        Map<Class<?>, Function<?, ?>> converters = new HashMap<>();
         registry.put(sourceClass, converters);
         return converters;
     }

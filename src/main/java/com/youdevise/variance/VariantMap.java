@@ -1,14 +1,13 @@
 package com.youdevise.variance;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Maps;
-
 public class VariantMap implements Map<Variant, Variant> {
 
-    private final Map<Variant, Variant> innerMap = Maps.newHashMap();
+    private final Map<Variant, Variant> innerMap = new HashMap<>();
     
     @Override
     public int size() {

@@ -2,11 +2,11 @@ package com.youdevise.variance;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.util.Arrays;
 
 public class ClassHierarchyInspectorTest {
     
@@ -18,7 +18,7 @@ public class ClassHierarchyInspectorTest {
     private static interface Bottom extends Lower { }
 
     private ClassHierarchyInspector inspectorOf(Class<?>...classes) {
-        return new ClassHierarchyInspector(Lists.newArrayList(classes));
+        return new ClassHierarchyInspector(Arrays.asList(classes));
     }
     
     @Test public void

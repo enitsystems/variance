@@ -1,13 +1,13 @@
 package com.youdevise.variance;
 
 import java.util.Collection;
+import java.util.LinkedList;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Lists.newLinkedList;
 
 public class ClassHierarchyInspector {
     
@@ -40,7 +40,7 @@ public class ClassHierarchyInspector {
     public <S> Collection<Class<? super S>> nearestSuperclassesOf(Class<S> klass) {
         Iterable<Class<? super S>> superclasses = (Iterable) filter(classes, isSuperclassOf(klass));
         
-        Collection<Class<? super S>> minima = newLinkedList();
+        Collection<Class<? super S>> minima = new LinkedList<>();
         for (Class<? super S> superclass : superclasses) {
             Iterables.removeIf(minima, isSuperclassOf(superclass));
             if (!Iterables.any(minima, isSubclassOf(superclass))) {
@@ -73,7 +73,7 @@ public class ClassHierarchyInspector {
     public <T> Collection<Class<? extends T>> nearestSubclassesOf(Class<T> klass) {
         Iterable<Class<? extends T>> subclasses = (Iterable) filter(classes, isSubclassOf(klass));
         
-        Collection<Class<? extends T>> maxima = newLinkedList();
+        Collection<Class<? extends T>> maxima = new LinkedList<>();
         for (Class<? extends T> subclass : subclasses) {
             Iterables.removeIf(maxima, isSubclassOf(subclass));
             if (!Iterables.any(maxima, isSuperclassOf(subclass))) {

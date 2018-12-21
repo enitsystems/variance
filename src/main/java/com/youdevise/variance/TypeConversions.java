@@ -1,10 +1,11 @@
 package com.youdevise.variance;
 
+import java.util.Arrays;
+
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
 
 public final class TypeConversions {
     private TypeConversions() { }
@@ -45,7 +46,7 @@ public final class TypeConversions {
     @SuppressWarnings("rawtypes")
     public static final Function<Object, Iterable> objectToIterable = new Function<Object, Iterable>() {
         @Override public Iterable apply(Object object) {
-            return Lists.newArrayList(object);
+            return Arrays.asList(object);
         }
     };
     

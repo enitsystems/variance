@@ -3,13 +3,16 @@ package com.youdevise.variance;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
 
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 public class Variant extends Number implements Supplier<Object> {
 
@@ -35,15 +38,15 @@ public class Variant extends Number implements Supplier<Object> {
     }
     
     public static Variant of(Object firstValue, Object...moreValues) {
-        return of(Lists.asList(firstValue, moreValues));
+    	return of(Stream.concat(Stream.of(firstValue), Stream.of(moreValues)).collect(Collectors.toList()));
     }
     
     public static Variant of(Iterable<?> values) {
-        return ofVariants(Iterables.transform(values, Variants.toVariant));
+    	return ofVariants(StreamSupport.stream(values.spliterator(), true).map(Variant::of).toArray(Variant[]::new));
     }
 
     public static Variant ofVariants(Variant...variants) {
-        return ofVariants(Lists.newArrayList(variants));
+        return ofVariants(Stream.of(variants).collect(Collectors.toList()));
     }
     
     public static Variant ofVariants(Iterable<Variant> variants) {
