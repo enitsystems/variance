@@ -1,9 +1,9 @@
 package com.youdevise.variance;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -44,7 +44,7 @@ public class CachingTypeConverterRegistry implements TypeConverterRegistry {
         }
         
         @Override public int hashCode() {
-            return Objects.hashCode(sourceClass, targetClass);
+        	return Objects.hash(sourceClass, targetClass);
         }
     }
     

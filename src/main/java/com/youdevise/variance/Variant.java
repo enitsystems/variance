@@ -3,13 +3,12 @@ package com.youdevise.variance;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Iterables;
@@ -158,7 +157,7 @@ public class Variant extends Number implements Supplier<Object> {
     @Override
     public boolean equals(Object o) {
         if (o instanceof Variant) {
-            return Objects.equal(((Variant) o).value, value);
+        	return Objects.equals(((Variant) o).value, value);
         }
         return false;
     }
