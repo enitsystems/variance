@@ -5,13 +5,12 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import java.util.function.Function;
+import java.util.stream.StreamSupport;
 
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Test;
-
-import com.google.common.collect.Iterables;
 
 public class VariantTest {
 
@@ -174,7 +173,8 @@ public class VariantTest {
         Variant[] children = { child };
 
         Variant parent = Variant.of(children);
-        assertThat(Iterables.getFirst(parent.asIterableOf(Variant.class), null).toString(), is("1"));
+        
+        assertThat(StreamSupport.stream(parent.asIterableOf(Variant.class).spliterator(), false).findFirst().get().toString(), is("1"));
     }
     
     @Test public void
@@ -184,7 +184,7 @@ public class VariantTest {
         
         Variant parent = Variant.of(children);
         Variant transferred = parent.in(contextWithMarker("parent"));
-        assertThat(Iterables.getFirst(transferred.asIterableOf(Variant.class), null).toString(), is("parent"));
+        assertThat(StreamSupport.stream(transferred.asIterableOf(Variant.class).spliterator(), false).findFirst().get().toString(), is("parent"));
     }
     
     private Function<Integer, String> contextMarker(final String marker) {

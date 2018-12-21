@@ -2,22 +2,21 @@ package com.youdevise.variance;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import com.google.common.collect.Iterables;
-
 public class ClassHierarchyInspector {
     
-    private final Iterable<Class<?>> classes;
+    private final Set<Class<?>> classes;
     
     public ClassHierarchyInspector(Iterable<Class<?>> classes) {
-        this.classes = classes;
+        this.classes = StreamSupport.stream(classes.spliterator(), true).collect(Collectors.toSet());
     }
     
     public <S> Class<? super S> nearestClassAssignableFrom(Class<S> klass) {
-        if (Iterables.contains(classes,  klass)) {
+    	if (classes.contains(klass)) {
             return klass;
         }
         return nearestSuperclassOf(klass);
@@ -32,12 +31,12 @@ public class ClassHierarchyInspector {
                                                              minima.stream().map(Object::toString).collect(Collectors.joining(", "))));
         }
         
-        return Iterables.getFirst(minima, null);
+        return minima.stream().findFirst().orElse(null);
     }
     
     @SuppressWarnings({ "unchecked" })
     public <S> Collection<Class<? super S>> nearestSuperclassesOf(Class<S> klass) {
-        Iterable<Class<? super S>> superclasses = StreamSupport.stream(classes.spliterator(), false)
+        Iterable<Class<? super S>> superclasses = classes.stream()
             	.filter(isSuperclassOf(klass))
             	.map(k -> (Class<? super S>)k)
             	.collect(Collectors.toList());
@@ -54,7 +53,7 @@ public class ClassHierarchyInspector {
     }
     
     public <T> Class<? extends T> nearestClassAssignableTo(Class<T> klass) {
-        if (Iterables.contains(classes,  klass)) {
+    	if (classes.contains(klass)) {
             return klass;
         }
         return nearestSubclassOf(klass);
@@ -68,12 +67,13 @@ public class ClassHierarchyInspector {
                                                              klass,
                                                              maxima.stream().map(Object::toString).collect(Collectors.joining(", "))));
         }
-        return Iterables.getFirst(maxima, null);
+        
+        return maxima.stream().findFirst().orElse(null);
     }
     
     @SuppressWarnings({ "unchecked" })
     public <T> Collection<Class<? extends T>> nearestSubclassesOf(Class<T> klass) {
-        Iterable<Class<? extends T>> subclasses = StreamSupport.stream(classes.spliterator(), false)
+        Iterable<Class<? extends T>> subclasses = classes.stream()
             	.filter(isSubclassOf(klass))
             	.map(k -> (Class<? extends T>)k)
             	.collect(Collectors.toList());
