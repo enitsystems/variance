@@ -1,8 +1,7 @@
 package com.youdevise.variance;
 
 import java.util.Stack;
-
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 public final class ImplicitTypeConversions {
     

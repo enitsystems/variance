@@ -1,11 +1,10 @@
 package com.youdevise.variance;
 
 import java.util.Arrays;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 
 public final class TypeConversions {
     private TypeConversions() { }
@@ -34,18 +33,18 @@ public final class TypeConversions {
         @Override public Float apply(Number number) { return number.floatValue(); }
     };
     
-    public static final Function<Object, String> toString = Functions.toStringFunction();
+    public static final Function<Object, String> toString = Object::toString;
     
     @SuppressWarnings("rawtypes")
     public static final Function<String, Iterable> stringToIterable = new Function<String, Iterable>() {
-        @Override public Iterable apply(String string) {
-            return Splitter.on(",").split(string);
+        @Override public Iterable<String> apply(String string) {
+        	return Arrays.asList(string.split(","));
         }
     };
     
     @SuppressWarnings("rawtypes")
     public static final Function<Object, Iterable> objectToIterable = new Function<Object, Iterable>() {
-        @Override public Iterable apply(Object object) {
+        @Override public Iterable<Object> apply(Object object) {
             return Arrays.asList(object);
         }
     };
@@ -53,7 +52,7 @@ public final class TypeConversions {
     @SuppressWarnings("rawtypes")
     public static final Function<Iterable, String> iterableToString = new Function<Iterable, String>() {
         @Override public String apply(Iterable parts) {
-            return Joiner.on(",").join(parts);
+        	return StreamSupport.stream(((Iterable<?>)parts).spliterator(), false).map(Object::toString).collect(Collectors.joining(","));
         }
     };
     

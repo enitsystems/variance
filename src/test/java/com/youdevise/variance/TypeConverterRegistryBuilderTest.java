@@ -1,11 +1,11 @@
 package com.youdevise.variance;
 
-import org.junit.Test;
-
-import com.google.common.base.Function;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import java.util.function.Function;
+
+import org.junit.Test;
 
 public class TypeConverterRegistryBuilderTest {
 

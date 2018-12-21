@@ -2,12 +2,11 @@ package com.youdevise.variance;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-
-import static com.google.common.collect.Iterables.filter;
 
 public class ClassHierarchyInspector {
     
@@ -30,20 +29,23 @@ public class ClassHierarchyInspector {
         if (minima.size() > 1) {
             throw new IllegalArgumentException(String.format("Cannot find unambiguous nearest superclass of [%s] from the set [%s]",
                                                              klass,
-                                                             Joiner.on(", ").join(minima)));
+                                                             minima.stream().map(Object::toString).collect(Collectors.joining(", "))));
         }
         
         return Iterables.getFirst(minima, null);
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     public <S> Collection<Class<? super S>> nearestSuperclassesOf(Class<S> klass) {
-        Iterable<Class<? super S>> superclasses = (Iterable) filter(classes, isSuperclassOf(klass));
+        Iterable<Class<? super S>> superclasses = StreamSupport.stream(classes.spliterator(), false)
+            	.filter(isSuperclassOf(klass))
+            	.map(k -> (Class<? super S>)k)
+            	.collect(Collectors.toList());
         
         Collection<Class<? super S>> minima = new LinkedList<>();
         for (Class<? super S> superclass : superclasses) {
-            Iterables.removeIf(minima, isSuperclassOf(superclass));
-            if (!Iterables.any(minima, isSubclassOf(superclass))) {
+        	minima.removeIf(isSuperclassOf(superclass));
+            if (!minima.stream().anyMatch(isSubclassOf(superclass))) {
                 minima.add(superclass);
             }
         }
@@ -64,20 +66,23 @@ public class ClassHierarchyInspector {
         if (maxima.size() > 1) {
             throw new IllegalArgumentException(String.format("Cannot find unambiguous nearest subclass of [%s] from the set [%s]",
                                                              klass,
-                                                             Joiner.on(", ").join(maxima)));
+                                                             maxima.stream().map(Object::toString).collect(Collectors.joining(", "))));
         }
         return Iterables.getFirst(maxima, null);
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({ "unchecked" })
     public <T> Collection<Class<? extends T>> nearestSubclassesOf(Class<T> klass) {
-        Iterable<Class<? extends T>> subclasses = (Iterable) filter(classes, isSubclassOf(klass));
+        Iterable<Class<? extends T>> subclasses = StreamSupport.stream(classes.spliterator(), false)
+            	.filter(isSubclassOf(klass))
+            	.map(k -> (Class<? extends T>)k)
+            	.collect(Collectors.toList());
         
         Collection<Class<? extends T>> maxima = new LinkedList<>();
-        for (Class<? extends T> subclass : subclasses) {
-            Iterables.removeIf(maxima, isSubclassOf(subclass));
-            if (!Iterables.any(maxima, isSuperclassOf(subclass))) {
-                maxima.add(subclass);
+        for (Class<?> subclass : subclasses) {
+        	maxima.removeIf(isSubclassOf(subclass));
+        	if (!maxima.stream().anyMatch(isSuperclassOf(subclass))) {
+                maxima.add((Class<? extends T>) subclass);
             }
         }
         
@@ -86,7 +91,7 @@ public class ClassHierarchyInspector {
     
     private <S> Predicate<Class<?>> isSuperclassOf(final Class<?> klass) {
         return new Predicate<Class<?>>() {
-            @Override public boolean apply(Class<?> otherClass) {
+            @Override public boolean test(Class<?> otherClass) {
                 return !otherClass.equals(klass) && otherClass.isAssignableFrom(klass);
             }
         };
@@ -94,7 +99,7 @@ public class ClassHierarchyInspector {
     
     private <S> Predicate<Class<?>> isSubclassOf(final Class<?> klass) {
         return new Predicate<Class<?>>() {
-            @Override public boolean apply(Class<?> otherClass) {
+            @Override public boolean test(Class<?> otherClass) {
                 return !otherClass.equals(klass) && klass.isAssignableFrom(otherClass);
             }
         };

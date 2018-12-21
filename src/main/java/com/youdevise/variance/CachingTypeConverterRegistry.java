@@ -2,9 +2,8 @@ package com.youdevise.variance;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -62,7 +61,7 @@ public class CachingTypeConverterRegistry implements TypeConverterRegistry {
     @Override
     public <S, T> Function<? super S, ? extends T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         Function<? super S, ? extends T> converter = findConverter(sourceClass, targetClass);
-        Preconditions.checkNotNull(converter, "No converter found between [%s] and [%s]", sourceClass, targetClass);
+        Objects.requireNonNull(converter, String.format("No converter found between [%s] and [%s]", sourceClass, targetClass));
         return converter;
     }
     

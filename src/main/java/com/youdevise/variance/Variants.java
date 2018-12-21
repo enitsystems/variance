@@ -1,7 +1,6 @@
 package com.youdevise.variance;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
+import java.util.function.Function;
 
 public final class Variants {
     
@@ -12,7 +11,7 @@ public final class Variants {
     private Variants() { }
 
     public static final Function<Object, Variant> toVariant(TypeConversionContext context)  {
-        return Functions.compose(Variants.inContext(context), toVariant);
+    	return toVariant.andThen(Variants.inContext(context));
     }
 
     public static <T> Function<Variant, T> variantTo(final Class<T> targetClass) {
@@ -22,7 +21,7 @@ public final class Variants {
     }
 
     public static <T> Function<Variant, T> variantTo(Class<T> targetClass, TypeConversionContext context) {
-        return Functions.compose(variantTo(targetClass), Variants.inContext(context));
+    	return Variants.inContext(context).andThen(variantTo(targetClass));
     }
 
     public static Function<Variant, Variant> inContext(final TypeConversionContext context) {

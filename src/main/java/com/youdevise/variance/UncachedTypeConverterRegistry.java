@@ -1,11 +1,8 @@
 package com.youdevise.variance;
 
+import java.util.Objects;
 import java.util.Set;
-
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
-import com.google.common.base.Preconditions;
-
+import java.util.function.Function;
 
 public class UncachedTypeConverterRegistry implements TypeConverterRegistry {
 
@@ -23,14 +20,14 @@ public class UncachedTypeConverterRegistry implements TypeConverterRegistry {
     @Override
     public <S, T> Function<? super S, ? extends T> getConverter(Class<S> sourceClass, Class<T> targetClass) {
         Function<? super S, ? extends T> converter = findConverter(sourceClass, targetClass);
-        Preconditions.checkNotNull(converter, "No converter found between [%s] and [%s]", sourceClass, targetClass);
+        Objects.requireNonNull(converter, String.format("No converter found between [%s] and [%s]", sourceClass, targetClass));
         return converter;
     }
     
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     private <S, T> Function<? super S, ? extends T> findConverter(Class<S> sourceClass, Class<T> targetClass) {
         if (targetClass.isAssignableFrom(sourceClass)) {
-            return (Function) Functions.identity();
+            return (Function<? super S, ? extends T>) Function.identity();
         }
         
         ClassHierarchyInspector inspector = new ClassHierarchyInspector(dictionary.sourceClasses());

@@ -1,6 +1,6 @@
 package com.youdevise.variance;
 
-import com.google.common.base.Supplier;
+import java.util.function.Supplier;
 
 public final class ProxyingTypeConversionContext implements TypeConversionContext {
     

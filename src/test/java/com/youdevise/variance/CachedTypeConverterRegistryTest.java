@@ -1,13 +1,13 @@
 package com.youdevise.variance;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+import java.util.function.Function;
+
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Test;
-
-import com.google.common.base.Function;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class CachedTypeConverterRegistryTest {
 

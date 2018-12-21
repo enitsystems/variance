@@ -4,14 +4,11 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Supplier;
-import com.google.common.collect.Iterables;
 
 public class Variant extends Number implements Supplier<Object> {
 
@@ -19,7 +16,7 @@ public class Variant extends Number implements Supplier<Object> {
     
     @SuppressWarnings({ "rawtypes" })
     public static Variant of(Object value) {
-        Preconditions.checkNotNull(value, "A variant cannot have a null value.");
+    	Objects.requireNonNull(value, "A variant cannot have a null value.");
         
         if (value instanceof Variant) {
             return (Variant) value;
@@ -79,33 +76,40 @@ public class Variant extends Number implements Supplier<Object> {
     }
 
     private Iterable<Variant> bound(Iterable<Variant> values, final TypeConversionContext typeConversionContext) {
-        return Iterables.transform(values, new Function<Variant, Variant>() {
-            @Override public Variant apply(Variant arg0) {
-                return new Variant(arg0.value, typeConversionContext);
-            }
-        });
+    	return StreamSupport.stream(values.spliterator(), false)
+	    	.map(new Function<Variant, Variant>() {
+	            @Override public Variant apply(Variant arg0) {
+	                return new Variant(arg0.value, typeConversionContext);
+	            }
+	        })
+	    	.collect(Collectors.toList());
     }
     
     public <C> C as(Class<C> targetClass) {
-        Preconditions.checkArgument(context().canConvert(value, targetClass),
-                                    "Unable to convert a value of type [%s] to [%s] in the current context",
-                                    value.getClass(),
-                                    targetClass);
+    	if (!context().canConvert(value,  targetClass) ) {
+    		throw new IllegalArgumentException(
+    				String.format("Unable to convert a value of type [%s] to [%s] in the current context",
+    						value.getClass(),
+                            targetClass));
+    	}
         return context().convert(value, targetClass);
     }
     
     @SuppressWarnings({ "unchecked" })
     public <C> Iterable<C> asIterableOf(final Class<C> targetClass) {
-        return Iterables.transform(as(Iterable.class), new Function<Object, C>() {
-            @Override public C apply(Object o) {
-                return context().convert(o, targetClass);
-            }
-        });
+    	return (Iterable<C>) StreamSupport.stream(as(Iterable.class).spliterator(), false)
+	    	.map(new Function<Object, C>() {
+	            @Override public C apply(Object o) {
+	                return context().convert(o, targetClass);
+	            }
+	        })
+	    	.collect(Collectors.toList());
     }
     
-    public <C> C[] asArrayOf(final Class<C> targetClass) {
-        Iterable<C> iterable = asIterableOf(targetClass);
-        return Iterables.toArray(iterable, targetClass);
+    @SuppressWarnings("unchecked")
+	public <C> C[] asArrayOf(final Class<C> targetClass) {
+        Collection<C> collection = (Collection<C>)asIterableOf(targetClass);
+        return collection.toArray((C[])Array.newInstance(targetClass, collection.size()));
     }
     
     public Variant in(TypeConversionContext ctx) {

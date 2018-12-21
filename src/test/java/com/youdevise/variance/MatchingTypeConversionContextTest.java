@@ -1,15 +1,13 @@
 package com.youdevise.variance;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.function.Function;
+
 import org.hamcrest.Matchers;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.junit.Test;
-
-import com.google.common.base.Function;
-import com.youdevise.variance.MatchingTypeConversionContext;
-import com.youdevise.variance.TypeConverterRegistry;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public class MatchingTypeConversionContextTest {
     

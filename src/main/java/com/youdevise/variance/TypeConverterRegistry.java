@@ -1,6 +1,6 @@
 package com.youdevise.variance;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 public interface TypeConverterRegistry {
     boolean hasConverter(Class<?> sourceType, Class<?> targetType);
