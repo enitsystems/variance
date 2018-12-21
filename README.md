@@ -1,4 +1,4 @@
-# VARIANCE
+# VARIANCE [![Build Status](https://travis-ci.org/enitsystems/variance.png?branch=java-8)](https://travis-ci.org/enitsystems/variance)
 
 The aim of *Variance* is to provide a general-purpose, custom-wirable junction box for conversion between Java types.
 
