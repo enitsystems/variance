@@ -11,7 +11,7 @@ public class VariantMapTest {
     converts_keys_and_values_to_variants_on_put() {
         VariantMap map = new VariantMap();
         
-        map.put("The meaning of life", "42");
+        map.putObject("The meaning of life", "42");
         assertThat(map.get("The meaning of life").intValue(), is(42));
         
         assertThat(map.containsKey("The meaning of life"), is(true));
@@ -22,7 +22,7 @@ public class VariantMapTest {
     converts_key_to_variants_on_get() {
         VariantMap map = new VariantMap();
         
-        map.put(Variant.of("The meaning of life"), "42");
+        map.putObject(Variant.of("The meaning of life"), "42");
         assertThat(map.get("The meaning of life").intValue(), is(42));
     }
     

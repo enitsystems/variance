@@ -40,7 +40,7 @@ public class VariantMap implements Map<Variant, Variant> {
         return innerMap.put(key, value);
     }
     
-    public Variant put(Object key, Object value) {
+    public Variant putObject(Object key, Object value) {
         return innerMap.put(Variant.of(key), Variant.of(value));
     }
 
