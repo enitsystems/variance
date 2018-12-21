@@ -1,0 +1,8 @@
+title: Variance
+description: A variant type for Java, with customisable automatic type conversion
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-slate
+
+gems:
+  - jekyll-mentions
