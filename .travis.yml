@@ -8,4 +8,4 @@ deploy:
   keep-history: true
   local-dir: target/site/apidocs
   on:
-    branch: master
+    branch: java-8
