@@ -6,6 +6,6 @@ deploy:
   skip-cleanup: true
   github-token: $GITHUB_API_TOKEN
   keep-history: true
-  local-dir: target/site/apidocs
+  local-dir: target/site/
   on:
     branch: java-8
